@@ -9,8 +9,7 @@ module PaginatingFind
       params = (options[:params] || DEFAULT_OPTIONS[:params]).clone
 
       paginating_links_each(paginator, options) do |n|
-        params[name] = n
-        link_to(n, params, html_options)
+        link_to(n, url_for(:overwrite_params => {name => n}), html_options)
       end
     end
 

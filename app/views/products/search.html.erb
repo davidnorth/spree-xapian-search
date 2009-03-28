@@ -5,12 +5,18 @@
   <p>Matches: <%= @products.matches_estimated %></p>
   
   <% if correction = @products.spelling_correction %>
-  Did you mean <%= link_to correction, search_path(:q => correction) %>?
+    Did you mean <%= link_to correction, search_path(:q => correction) %>?
   <% end %>
 
-  <% for product in @products %>
-    <h3><%= link_to h(product.name), product_path(product) %></h3>
-    <p><%= product.search_percent %>%</p>
+  <% if @products.empty? %>
+    <p>Sorry, your search returned no results</p>
+  <% else %>
+    <% for product in @products %>
+      <h3><%= link_to h(product.name), product_path(product) %></h3>
+      <p><%= product.search_percent %>%</p>
+    <% end %>
+    <p><%= paginating_links(@products) %></p>
   <% end %>
 
+  
 <% end %>
