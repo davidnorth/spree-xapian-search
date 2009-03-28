@@ -1,8 +1,12 @@
 <%= render 'search_form' %>
 
 <% if @products %>
+
+  <h1>Search Products for &lsquo;<%= h(params[:q].strip) %>&rsquo;</h1>
   
-  <p>Matches: <%= @products.matches_estimated %></p>
+  <% if @products.matches_estimated > 0 %>
+  <p><%= pluralize @products.matches_estimated, 'product' %> found</p>
+  <% end %>
   
   <% if correction = @products.spelling_correction %>
     Did you mean <%= link_to correction, search_path(:q => correction) %>?
@@ -15,8 +19,16 @@
       <h3><%= link_to h(product.name), product_path(product) %></h3>
       <p><%= product.search_percent %>%</p>
     <% end %>
-    <p><%= paginating_links(@products) %></p>
+    
+    <% if @products.total_pages > 1 %>
+      <p><%= paginating_links(@products) %></p>
+    <% end %>
+
   <% end %>
 
   
+<% else %>
+
+  <h1>Product Search</h1>
+
 <% end %>
