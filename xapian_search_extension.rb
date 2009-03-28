@@ -6,22 +6,28 @@ class XapianSearchExtension < Spree::Extension
   description "Full text product search for Spree using acts_as_xapian"
   url "http://github.com/davidnorth/spree-xapian-search"
 
-  # Please use xapian_search/config/routes.rb instead for extension routes.
-
-  # def self.require_gems(config)
-  #   config.gem "gemname-goes-here", :version => '1.2.3'
-  # end
-  
   def activate
 
     Product.class_eval do
       acts_as_xapian :texts => [:name, :description]
-      
+      attr_accessor :search_percent
+      attr_accessor :search_weight
+
       def self.search(query, options = {})
         options = {:page => 1, :per_page => 10}.update(options)
-        search = ActsAsXapian::Search.new([Product], query, :limit => options[:per_page])
-        products = search.results.map{|result| result[:model]}
-        
+        xapian_search = ActsAsXapian::Search.new([Product], query, :limit => options[:per_page])
+
+        products = XapianResultCollection.new
+
+        xapian_search.results.map do |result|
+          product = result[:model]
+          product.search_percent = result[:percent]
+          product.search_weight = result[:weight]
+          products << product
+        end
+
+        products.xapian_search = xapian_search
+
         products
       end
       
