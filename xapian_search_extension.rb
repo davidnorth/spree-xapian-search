@@ -16,6 +16,25 @@ class XapianSearchExtension < Spree::Extension
 
     Product.class_eval do
       acts_as_xapian :texts => [:name, :description]
+      
+      def self.search(query, options = {})
+        options = {:page => 1, :per_page => 10}.update(options)
+        search = ActsAsXapian::Search.new([Product], query, :limit => options[:per_page])
+        products = search.results.map{|result| result[:model]}
+        
+        products
+      end
+      
+    end
+
+    ProductsController.class_eval do
+      
+      def search
+        if params[:q]
+          @products = Product.search(params[:q], :page => params[:page], :per_page => 3)
+        end
+      end
+      
     end
     
   end

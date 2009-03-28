@@ -1,0 +1,10 @@
+<%= render 'search_form' %>
+
+<% if @products %>
+
+  <% for product in @products %>
+    <h3><%= link_to h(product.name), product_path(product) %></h3>
+    
+  <% end %>
+
+<% end %>
