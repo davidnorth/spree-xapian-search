@@ -3,8 +3,8 @@
 
 class XapianSearchExtension < Spree::Extension
   version "1.0"
-  description "Describe your extension here"
-  url "http://yourwebsite.com/xapian_search"
+  description "Full text product search for Spree using acts_as_xapian"
+  url "http://github.com/davidnorth/spree-xapian-search"
 
   # Please use xapian_search/config/routes.rb instead for extension routes.
 
@@ -13,6 +13,10 @@ class XapianSearchExtension < Spree::Extension
   # end
   
   def activate
-    # admin.tabs.add "Xapian Search", "/admin/xapian_search", :after => "Layouts", :visibility => [:all]
+
+    Product.class_eval do
+      acts_as_xapian :texts => [:name, :description]
+    end
+    
   end
 end
