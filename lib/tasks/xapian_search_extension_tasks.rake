@@ -1,3 +1,5 @@
+load File.dirname(__FILE__) + "/../../vendor/plugins/acts_as_xapian/tasks/xapian.rake"
+
 namespace :db do
   desc "Bootstrap your database for Spree."
   task :bootstrap  => :environment do

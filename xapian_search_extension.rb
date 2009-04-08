@@ -8,8 +8,6 @@ class XapianSearchExtension < Spree::Extension
 
   def activate
 
-    ActionView::Base.send(:include, PaginatingFind::Helpers)    
-
     Product.class_eval do
       
       cattr_accessor :xapian_search_texts
