@@ -5,7 +5,7 @@
   <h1>Search Products for &lsquo;<%= h(params[:q].strip) %>&rsquo;</h1>
   
   <% if @products.matches_estimated > 0 %>
-  <p><%= pluralize @products.matches_estimated, 'product' %> found</p>
+    <p><%= pluralize @products.matches_estimated, 'product' %> found</p>
   <% end %>
   
   <% if correction = @products.spelling_correction %>
@@ -20,9 +20,7 @@
       <p><%= product.search_percent %>%</p>
     <% end %>
     
-    <% if @products.total_pages > 1 %>
-      <p><%= paginating_links(@products) %></p>
-    <% end %>
+    <%= will_paginate @products %>
 
   <% end %>
 

@@ -8,7 +8,6 @@ class XapianSearchExtension < Spree::Extension
 
   def activate
 
-    require 'paging_helper'
     ActionView::Base.send(:include, PaginatingFind::Helpers)    
 
     Product.class_eval do
@@ -31,19 +30,18 @@ class XapianSearchExtension < Spree::Extension
         offset = options[:per_page] * (options[:page].to_i - 1)
         xapian_search = ActsAsXapian::Search.new([Product], query, :limit => options[:per_page], :offset => offset)
 
-        products = XapianResultEnumerator.new(
-          xapian_search.results.map do |result|
-            product = result[:model]
-            product.search_percent = result[:percent]
-            product.search_weight = result[:weight]
-            product
-          end
-        )
+        products = xapian_search.results.map do |result|
+          product = result[:model]
+          product.search_percent = result[:percent]
+          product.search_weight = result[:weight]
+          product
+        end
                 
-        products.xapian_search = xapian_search
-        products.page = options[:page].to_i
-        products.total_pages = total_pages
-        products
+
+        returning XapianResultEnumerator.new(options[:page], options[:per_page], total_matches) do |pager|
+          pager.xapian_search = xapian_search
+          pager.replace products
+        end
 
       end
       
@@ -53,7 +51,7 @@ class XapianSearchExtension < Spree::Extension
       
       def search
         if params[:q]
-          @products = Product.search(params[:q], :page => params[:page], :per_page => 10)
+          @products = Product.search(params[:q], :page => params[:page], :per_page => 3)
         end
       end
       

@@ -1,16 +1,8 @@
-class XapianResultEnumerator < Array
+class XapianResultEnumerator < WillPaginate::Collection
 
-  attr_accessor :xapian_search, :page, :total_pages
+  attr_accessor :xapian_search
   
   delegate :matches_estimated, :spelling_correction, :words_to_highlight, :to => :xapian_search
 
 
-  def first_page
-    1
-  end
-
-  def last_page
-    total_pages
-  end
-  
 end
