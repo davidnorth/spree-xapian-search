@@ -9,11 +9,12 @@ class XapianSearchExtension < Spree::Extension
   def activate
 
     Product.class_eval do
-      
-      cattr_accessor :xapian_search_texts
-      xapian_search_texts = [:name, :description]
 
-      acts_as_xapian :texts => xapian_search_texts
+      acts_as_xapian :texts => [:name, :description, :meta_keywords, :meta_description, :extra_search_texts]
+      
+      def extra_search_texts
+        ''
+      end
 
       attr_accessor :search_percent
       attr_accessor :search_weight
